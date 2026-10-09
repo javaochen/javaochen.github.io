@@ -40,22 +40,37 @@ if ($Old -eq $New) { Write-Host "新旧文件名相同，无需改名。" -Foreg
 
 # ---------- 工具 ----------
 
-# 读 UTF-8（兼容有无 BOM）
-function Read-Utf8 {
+# 读文本，同时记住 BOM 与尾换行状态，供写回时还原
+function Read-Utf8Text {
     param([string]$Path)
-    return [System.IO.File]::ReadAllText($Path, [System.Text.UTF8Encoding]::new($false))
+    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    $hasBom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF)
+    $text = [System.IO.File]::ReadAllText($Path, (New-Object System.Text.UTF8Encoding($hasBom)))
+    if ($text.EndsWith("`r`n")) { $end = 'crlf' } elseif ($text.EndsWith("`n")) { $end = 'lf' } else { $end = 'none' }
+    if ($text.Contains("`r`n")) { $nl = 'crlf' } else { $nl = 'lf' }
+    return New-Object PSObject -Property @{ Text = $text; HasBom = $hasBom; EndNewline = $end; Newline = $nl }
 }
 
-# 写 UTF-8 且不带 BOM —— 关键！带 BOM 会让 front matter 失效，
-# 因为 Jekyll 要求文件第一个字符就是 '-'
-function Write-Utf8NoBom {
-    param([string]$Path, [string]$Text)
-    [System.IO.File]::WriteAllText($Path, $Text, [System.Text.UTF8Encoding]::new($false))
+# 写文本，还原 BOM 与尾换行状态。
+# 不带 BOM 很关键：带 BOM 会让 front matter 失效，因为 Jekyll 要求第一个字符就是 '-'
+# 还原尾换行同样关键：否则每次改名都会在文件末尾多/少一个换行，污染 diff
+function Write-Utf8Text {
+    param([string]$Path, [string]$Text, [bool]$HasBom, [string]$EndNewline)
+    $body = $Text.TrimEnd("`r", "`n")
+    if ($EndNewline -eq 'crlf')     { $body = $body + "`r`n" }
+    elseif ($EndNewline -eq 'lf')   { $body = $body + "`n" }
+    [System.IO.File]::WriteAllText($Path, $body, (New-Object System.Text.UTF8Encoding($HasBom)))
 }
 
 function Get-Rel {
     param([string]$Full)
     return $Full.Replace("$SiteRoot\", '')
+}
+
+# 抓取当前所有 .md 文件。改名后路径会变，必须重新调用，不能用旧列表。
+function Get-MdFiles {
+    return @(Get-ChildItem -Recurse -Force $SiteRoot -Filter *.md |
+        Where-Object { $_.FullName -notmatch '\\\.git\\' })
 }
 
 # ---------- 0. 前置检查：不能有未提交的改动被覆盖 ----------
@@ -69,8 +84,7 @@ if ($dirty) {
 
 # ---------- 1. 定位目标文件 ----------
 
-$allMd = @(Get-ChildItem -Recurse -Force $SiteRoot -Filter *.md |
-    Where-Object { $_.FullName -notmatch '\\\.git\\' })
+$allMd = Get-MdFiles
 
 $oldFile = $allMd | Where-Object { $_.BaseName -eq $Old } | Select-Object -First 1
 if (-not $oldFile) {
@@ -89,7 +103,8 @@ if (Test-Path $newFile) { Write-Host "目标文件已存在：$New.md，先处�
 
 # ---------- 2. 读出当前事实 ----------
 
-$content = Read-Utf8 $oldFile.FullName
+$info = Read-Utf8Text $oldFile.FullName
+$content = $info.Text
 
 $oldPermalink = $null
 $m = [regex]::Match($content, '(?m)^permalink:\s*(\S+)\s*$')
@@ -129,8 +144,10 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # ---------- 4. 改该文件内部 ----------
+# 注意：改名后原路径已失效，这里读的是 $newFile
 
-$content = Read-Utf8 $newFile
+$info = Read-Utf8Text $newFile
+$content = $info.Text
 
 if ($oldPermalink) {
     $content = $content -replace [regex]::Escape("permalink: $oldPermalink"), "permalink: $newPermalink"
@@ -144,12 +161,16 @@ if ($NewTitle) {
     if ($oldH1)    { $content = $content -replace [regex]::Escape("# $oldH1"), "# $NewTitle" }
 }
 
-Write-Utf8NoBom $newFile $content
+Write-Utf8Text $newFile $content $info.HasBom $info.EndNewline
 $innerParts = '文件名、permalink'
 if ($NewTitle) { $innerParts = $innerParts + '、title、H1' }
 Write-Host ("已改：" + $New + ".md（" + $innerParts + "）")
 
 # ---------- 5. 改其他文件里指向它的链接 ----------
+# 关键：必须重新抓文件列表。改名前缓存的列表里存的是旧路径，
+# 拿它去读文件会直接报「找不到文件」。
+
+$allMd = Get-MdFiles
 
 $targets = @($oldPermalink, "/$relDir/$Old/", "/$relDir/$Old") |
     Where-Object { $_ } | Select-Object -Unique
@@ -158,12 +179,13 @@ $changedFiles = @()
 foreach ($f in $allMd) {
     if ($f.FullName -eq $newFile) { continue }
     $rel = Get-Rel $f.FullName
-    $text = Read-Utf8 $f.FullName
+    $fi = Read-Utf8Text $f.FullName
+    $text = $fi.Text
     $orig = $text
 
     foreach ($t in $targets) {
         $newT = $newPermalink
-        # [文字](目标)  ——  地址前有 ( 或 /，后面必须是 / 或 ) 或 # 或行尾
+        # 地址前有 ( 或 /，后面必须是 / 或 ) 或 # 或行尾
         $pattern = '(?<=\()' + [regex]::Escape($t) + '(?=(/|\)|#|$))'
         $text = [regex]::Replace($text, $pattern, { param($mm) $newT })
 
@@ -178,7 +200,7 @@ foreach ($f in $allMd) {
     }
 
     if ($text -ne $orig) {
-        Write-Utf8NoBom $f.FullName $text
+        Write-Utf8Text $f.FullName $text $fi.HasBom $fi.EndNewline
         $changedFiles += $rel
         Write-Host "已改：$rel（指向它的链接）"
     }
@@ -188,13 +210,14 @@ foreach ($f in $allMd) {
 
 $notes = Join-Path $SiteRoot 'NOTES.md'
 if (Test-Path $notes) {
-    $t = Read-Utf8 $notes
+    $ni = Read-Utf8Text $notes
+    $t = $ni.Text
     $orig = $t
     $escOld = [regex]::Escape($Old)
     $treePattern = '(?m)^(\s*[│├└─\s]*)' + $escOld + '\.md(\s)'
     $treeReplace = '${1}' + $New + '.md${2}'
     $t = [regex]::Replace($t, $treePattern, $treeReplace)
-    if ($t -ne $orig) { Write-Utf8NoBom $notes $t; Write-Host "已改：NOTES.md（目录树）" }
+    if ($t -ne $orig) { Write-Utf8Text $notes $t $ni.HasBom $ni.EndNewline; Write-Host "已改：NOTES.md（目录树）" }
 }
 
 # ---------- 7. 自动校验 ----------
