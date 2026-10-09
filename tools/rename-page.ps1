@@ -174,17 +174,19 @@ Write-Host ("已改：" + $New + ".md（" + $innerParts + "）")
 
 $allMd = Get-MdFiles
 
-# 链接地址有两种写法，两种都要搜：
-#   绝对写法  [文字](/about/tmptest/)      —— permalink 决定的规范形式
-#   相对写法  [文字](tmptest/)             —— 同目录页面之间常用，本项目就是这样
-# 只搜绝对写法是之前漏改链接的根因。
-$targets = @(
-    $oldPermalink,                              # /about/<旧名>/
-    "/$relDir/$Old/",                           # 绝对，带斜杠
-    "/$relDir/$Old",                            # 绝对，不带斜杠
-    "$Old/",                                    # 相对，带斜杠
-    $Old                                        # 相对，不带斜杠
-) | Where-Object { $_ } | Select-Object -Unique
+# 链接地址不能一律换成绝对 permalink，必须按「匹配到的原样式」替换。
+#
+# 为什么：链接地址是相对于「所在页面」解析的。
+#   index.md 位于 /about/，写 [文字](beta/) 解析为 /about/beta/         —— 对
+#   若换成 /about/gamma/，从 /about/ 出发会解析成 /about/about/gamma/   —— 死链
+# 所以相对的就保持相对，绝对的就保持绝对。
+$replacements = @(
+    @{ From = $oldPermalink;    To = $newPermalink },     # 绝对（permalink 原样）
+    @{ From = "/$relDir/$Old/"; To = "/$relDir/$New/" },  # 绝对，带斜杠
+    @{ From = "/$relDir/$Old";  To = "/$relDir/$New" },   # 绝对，不带斜杠
+    @{ From = "$Old/";          To = "$New/" },           # 相对，带斜杠
+    @{ From = "$Old";           To = "$New" }             # 相对，不带斜杠
+)
 
 $changedFiles = @()
 foreach ($f in $allMd) {
@@ -194,10 +196,12 @@ foreach ($f in $allMd) {
     $text = $fi.Text
     $orig = $text
 
-    foreach ($t in $targets) {
-        $newT = $newPermalink
-        # 地址前有 ( 或 /，后面必须是 / 或 ) 或 # 或行尾
-        $pattern = '(?<=\()' + [regex]::Escape($t) + '(?=(/|\)|#|$))'
+    foreach ($r in $replacements) {
+        $t = $r.From
+        if (-not $t) { continue }
+        $newT = $r.To
+        # 前一个字符必须是 ( 或 / 或行首，后面必须是 / 或 ) 或 # 或行尾
+        $pattern = '(?<=[\(/]|^)' + [regex]::Escape($t) + '(?=(/|\)|#|$))'
         $text = [regex]::Replace($text, $pattern, { param($mm) $newT })
 
         # 链接文字同步（只在该链接指向旧地址时替换）
