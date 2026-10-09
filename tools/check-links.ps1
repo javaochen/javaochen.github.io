@@ -138,12 +138,19 @@ foreach ($f in $mdFiles) {
 
 # ---------- 3. 报告 ----------
 
-Write-Host "`n=== 检查了 $checkedLinks 个内部链接 ==="
+Write-Host ""
+Write-Host ("=== 检查了 " + $checkedLinks + " 个内部链接 ===")
 if ($brokenLinks.Count -eq 0) {
     Write-Host "全部通过，没有死链。" -ForegroundColor Green
 } else {
-    Write-Host "发现 $($brokenLinks.Count) 个死链：" -ForegroundColor Red
-    $brokenLinks | Select-Object '文件', '链接文字', '地址', '解析为' | Format-Table -AutoSize
+    Write-Host ("发现 " + $brokenLinks.Count + " 个死链：") -ForegroundColor Red
+    # 不用 Format-Table，避免被外部工具截断成 FormatStartData 之类对象
+    foreach ($b in $brokenLinks) {
+        Write-Host ("  文件: " + $b.文件)
+        Write-Host ("  链接: [" + $b.链接文字 + "](" + $b.地址 + ")")
+        Write-Host ("  解析为: " + $b.解析为 + "   —— 该地址既不是任何页面的 permalink，也没有对应文件")
+        Write-Host ""
+    }
 }
 
 # ---------- 4. 尾斜杠风格一致性 ----------

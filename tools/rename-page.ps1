@@ -96,7 +96,9 @@ if (-not $oldFile) {
 $relOld = Get-Rel $oldFile.FullName
 $dirFull = Split-Path -Parent $oldFile.FullName
 $relDir = Get-Rel $dirFull
-if ($relDir -eq $relOld) { $relDir = '' }
+# 文件在站点根目录时，Split-Path 会返回 SiteRoot 本身（含反斜杠），要归零
+if ($relDir -eq $SiteRoot -or $relDir -eq ($SiteRoot + '\')) { $relDir = '' }
+$relDir = $relDir.TrimEnd('\', '/')
 
 $newFile = Join-Path $dirFull "$New.md"
 if (Test-Path $newFile) { Write-Host "目标文件已存在：$New.md，先处理它。" -ForegroundColor Red; exit 1 }
@@ -172,8 +174,17 @@ Write-Host ("已改：" + $New + ".md（" + $innerParts + "）")
 
 $allMd = Get-MdFiles
 
-$targets = @($oldPermalink, "/$relDir/$Old/", "/$relDir/$Old") |
-    Where-Object { $_ } | Select-Object -Unique
+# 链接地址有两种写法，两种都要搜：
+#   绝对写法  [文字](/about/tmptest/)      —— permalink 决定的规范形式
+#   相对写法  [文字](tmptest/)             —— 同目录页面之间常用，本项目就是这样
+# 只搜绝对写法是之前漏改链接的根因。
+$targets = @(
+    $oldPermalink,                              # /about/<旧名>/
+    "/$relDir/$Old/",                           # 绝对，带斜杠
+    "/$relDir/$Old",                            # 绝对，不带斜杠
+    "$Old/",                                    # 相对，带斜杠
+    $Old                                        # 相对，不带斜杠
+) | Where-Object { $_ } | Select-Object -Unique
 
 $changedFiles = @()
 foreach ($f in $allMd) {
