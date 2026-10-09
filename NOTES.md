@@ -36,7 +36,7 @@ permalink: /about/xxx/
 
 ## 一条重要规则
 
-**链接里的 `xxx/` 不要带 `.html` 后缀。** 因为我们在 front matter 里用 `permalink` 把 URL 定成了干净形式，带上后缀反而会 404。
+**链接里的 `xxx/` 不要带 `.html` 后缀。** 就是 `文件名/`。因为我们在 front matter 里用 `permalink` 把 URL 定成了干净形式，带上后缀反而会 404。
 
 ## 图片怎么放
 
