@@ -10,7 +10,7 @@
 ├── about/                         关于我（访问 /about/）
 │   ├── index.md                   入口页，列出下面几个子页的链接
 │   ├── bio.md                     学术背景
-│   ├── my_behavior.md             我的行为
+│   ├── behavior.md                我的行为
 │   ├── group_hidden_node.md       联合推断时序中的群体作用和隐藏节点
 │   └── powergid_research.md       城市电网承载力项目
 ├── archive/                       归档，一年内用不到的内容
