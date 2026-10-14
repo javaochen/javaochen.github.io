@@ -59,17 +59,16 @@ $local = (git -C $SiteRoot rev-parse HEAD).Trim()
 Show ("[2/4] 已提交 " + $local.Substring(0, 7)) 'Green'
 
 # ---------- 3. 推送 ----------
+#
+# 这里刻意不捕获 git push 的输出。原因：
+#   ① git 把推送到 stderr，PowerShell 5.1 下赋值捕获会把它当异常抛出；
+#   ② 捕获也没意义 —— 这台机器网络不稳，push 的输出和真实结果常常不一致。
+# 真正的判据在第 4 步：回头问远端到底收到没有。
 
 Show "[3/4] 推送中..." 'Green'
-$pushOut = git -C $SiteRoot push 2>&1
-# 网络问题会让 git 报错，所以不靠它的输出判断，交给下一步验证
-if ($pushOut -match "main -> main|Everything up-to-date") {
-    Show "      推送命令回报成功" 'DarkGray'
-} else {
-    Show "      推送命令有报错（下面会实际验证远端）" 'Yellow'
-}
+git -C $SiteRoot push 2>&1 | Out-Null
 
-# ---------- 4. 验证远端（关键一步） ----------
+# ---------- 4. 验证远端（唯一可信的判据） ----------
 
 Show "[4/4] 验证远端..." 'Green'
 git -C $SiteRoot fetch -q origin 2>&1 | Out-Null
