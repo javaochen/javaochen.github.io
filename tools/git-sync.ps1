@@ -60,18 +60,32 @@ Show ("[2/4] 已提交 " + $local.Substring(0, 7)) 'Green'
 
 # ---------- 3. 推送 ----------
 #
-# 这里刻意不捕获 git push 的输出。原因：
-#   ① git 把推送到 stderr，PowerShell 5.1 下赋值捕获会把它当异常抛出；
-#   ② 捕获也没意义 —— 这台机器网络不稳，push 的输出和真实结果常常不一致。
-# 真正的判据在第 4 步：回头问远端到底收到没有。
+# 这里必须临时放宽 $ErrorActionPreference。
+# 脚本开头设了 'Stop'，而 git 把推送进度写到 stderr，
+# PowerShell 5.1 会把 native 命令的 stderr 变成错误记录 —— 在 'Stop' 下
+# 这会在 push 这一行直接终止脚本，导致第 4 步的验证永远跑不到。
+# 之前两次测试都是这样断在第 3 步之后的。
+#
+# 放宽只限于这一行；其余地方仍保持严格，别的问题照样会当场暴露。
 
 Show "[3/4] 推送中..." 'Green'
-git -C $SiteRoot push 2>&1 | Out-Null
+$savedEap = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
+try {
+    git -C $SiteRoot push 2>&1 | Out-Null
+} finally {
+    $ErrorActionPreference = $savedEap
+}
 
 # ---------- 4. 验证远端（唯一可信的判据） ----------
 
 Show "[4/4] 验证远端..." 'Green'
-git -C $SiteRoot fetch -q origin 2>&1 | Out-Null
+$ErrorActionPreference = 'Continue'
+try {
+    git -C $SiteRoot fetch -q origin 2>&1 | Out-Null
+} finally {
+    $ErrorActionPreference = 'Stop'
+}
 $remote = (git -C $SiteRoot rev-parse origin/main).Trim()
 
 if ($local -eq $remote) {
