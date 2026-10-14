@@ -6,7 +6,7 @@ permalink: /about/
 # 我的状态
 
 
-- [学术背景](bio/)
+- [研究状态](research_status/)
 
 ## 在做的项目
 [联合推断时序中的群体作用和隐藏节点](group_hidden_node/)
