@@ -123,9 +123,21 @@ if ($m.Success) { $oldH1 = $m.Groups[1].Value }
 # 新 permalink 按全站约定：<目录>/<新名>/
 $newPermalink = if ($relDir) { "/$relDir/$New/" } else { "/$New/" }
 
-# 链接文字默认沿用旧 H1（没有 H1 就用旧 title）
+# 链接文字旧值：优先用 H1，没有 H1 就用 title
 $linkTextOld = if ($oldH1) { $oldH1 } elseif ($oldTitle) { $oldTitle } else { $Old }
-$linkTextNew = if ($NewLinkText) { $NewLinkText } else { $linkTextOld }
+
+# 链接文字新值，三层回退：
+#   ① 显式给了 -NewLinkText 就用它（想只改链接、不动标题时用）
+#   ② 否则跟着 -NewTitle 走（标题改了，导航链接一般也该跟着改）
+#   ③ 都没给就保持不变
+# 之前的写法漏了 ②，导致传 -NewTitle 时链接文字永远不动。
+if ($NewLinkText) {
+    $linkTextNew = $NewLinkText
+} elseif ($NewTitle) {
+    $linkTextNew = $NewTitle
+} else {
+    $linkTextNew = $linkTextOld
+}
 
 Write-Host "=== 改名计划 ==="
 Write-Host ("  文件      {0}  ->  {1}" -f $relOld, (Get-Rel $newFile))
@@ -200,18 +212,25 @@ foreach ($f in $allMd) {
         $t = $r.From
         if (-not $t) { continue }
         $newT = $r.To
-        # 前一个字符必须是 ( 或 / 或行首，后面必须是 / 或 ) 或 # 或行尾
-        $pattern = '(?<=[\(/]|^)' + [regex]::Escape($t) + '(?=(/|\)|#|$))'
-        $text = [regex]::Replace($text, $pattern, { param($mm) $newT })
+        $escT = [regex]::Escape($t)
 
-        # 链接文字同步（只在该链接指向旧地址时替换）
-        if ($linkTextNew -ne $linkTextOld) {
-            $labPattern = '\[(' + [regex]::Escape($linkTextOld) + ')\]\((' + [regex]::Escape($t) + '(?:/|\)|#))'
-            $text = [regex]::Replace($text, $labPattern, {
-                param($mm)
-                '[' + $linkTextNew + '](' + $newT.TrimEnd('/') + $mm.Groups[2].Value.Substring($mm.Groups[2].Value.Length - 1)
-            })
-        }
+        # ① 链接整体：[文字](地址)
+        #    文字和地址必须「一次性」替换。分两步做会失败：
+        #    先改地址后，文字那步的正则还在找旧地址，永远匹配不上。
+        #    地址末尾保留原来的 / 或 ) ，文字只在等于旧值时才换。
+        $linkPattern = '\[([^\]]*)\]\(' + $escT + '(/|\)|#)'
+        $text = [regex]::Replace($text, $linkPattern, {
+            param($mm)
+            $lab = $mm.Groups[1].Value
+            $tail = $mm.Groups[2].Value
+            if ($lab -eq $linkTextOld) { $lab = $linkTextNew }
+            '[' + $lab + '](' + $newT + $tail
+        })
+
+        # ② 裸地址（不在 markdown 链接里的，例如 <a href="bio/">）
+        #    前一个字符必须是 ( 或 / 或行首，后面必须是 / 或 ) 或 # 或行尾
+        $barePattern = '(?<=[\(/]|^)' + $escT + '(?=(/|\)|#|$))'
+        $text = [regex]::Replace($text, $barePattern, { param($mm) $newT })
     }
 
     if ($text -ne $orig) {
