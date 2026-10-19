@@ -58,38 +58,80 @@ if ($LASTEXITCODE -ne 0) { Show "提交失败" 'Red'; exit 1 }
 $local = (git -C $SiteRoot rev-parse HEAD).Trim()
 Show ("[2/4] 已提交 " + $local.Substring(0, 7)) 'Green'
 
-# ---------- 3. 推送 ----------
+# ---------- 3. 推送（先探测线路，再推送） ----------
 #
-# 这里必须临时放宽 $ErrorActionPreference。
-# 脚本开头设了 'Stop'，而 git 把推送进度写到 stderr，
-# PowerShell 5.1 会把 native 命令的 stderr 变成错误记录 —— 在 'Stop' 下
-# 这会在 push 这一行直接终止脚本，导致第 4 步的验证永远跑不到。
-# 之前两次测试都是这样断在第 3 步之后的。
+# 这台机器到 GitHub 的线路不稳定，实测出现过两种相反的情况：
+#   有时直连完全不通（21 秒超时），走代理 1.6 秒成功；
+#   有时代理卡死，直连 3 秒成功。
 #
-# 放宽只限于这一行；其余地方仍保持严格，别的问题照样会当场暴露。
+# 关键教训：http.lowSpeedLimit 只对「传输太慢」生效，对「连接建立不起来」
+# 无效——卡死的代理会让 git 无限等待。所以必须由外部强制超时。
+# 做法：把 git 放进后台作业，等固定秒数，超时就杀掉。
+#
+# 先探测再推送：每条线路先跑一次只读的 ls-remote，8 秒内返回才算通。
+# 这样卡死的线路只浪费 8 秒，而不是整次 push 的时间。
 
-Show "[3/4] 推送中..." 'Green'
-$savedEap = $ErrorActionPreference
-$ErrorActionPreference = 'Continue'
-try {
-    git -C $SiteRoot push 2>&1 | Out-Null
-} finally {
-    $ErrorActionPreference = $savedEap
+$modes = @(
+    @{ Name = '当前配置'; Extra = @() },
+    @{ Name = '直连';     Extra = @('-c', 'http.proxy=') },
+    @{ Name = '代理 7890'; Extra = @('-c', 'http.proxy=http://127.0.0.1:7890') }
+)
+
+# 在后台作业里跑 git，超时返回 $false
+function Invoke-GitWithTimeout {
+    param([string[]]$GitArgs, [int]$TimeoutSec = 8)
+
+    $job = Start-Job -ScriptBlock {
+        param($a)
+        $saved = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        try {
+            $out = & git @a 2>&1
+            return [pscustomobject]@{ Code = $LASTEXITCODE; Out = (($out | Out-String).Trim()) }
+        } finally {
+            $ErrorActionPreference = $saved
+        }
+    } -ArgumentList (,$GitArgs)
+
+    $finished = Wait-Job $job -Timeout $TimeoutSec
+    if (-not $finished) {
+        Stop-Job $job -ErrorAction SilentlyContinue
+        Remove-Job $job -Force -ErrorAction SilentlyContinue
+        return [pscustomobject]@{ TimedOut = $true; Code = -1; Out = '' }
+    }
+    $r = Receive-Job $job
+    Remove-Job $job -Force -ErrorAction SilentlyContinue
+    return [pscustomobject]@{ TimedOut = $false; Code = $r.Code; Out = $r.Out }
 }
 
-# ---------- 4. 验证远端（唯一可信的判据） ----------
-
-Show "[4/4] 验证远端..." 'Green'
-$ErrorActionPreference = 'Continue'
-try {
-    git -C $SiteRoot fetch -q origin 2>&1 | Out-Null
-} finally {
-    $ErrorActionPreference = 'Stop'
+Show "[3/4] 探测可用线路..." 'Green'
+$chosen = $null
+foreach ($m in $modes) {
+    $probe = Invoke-GitWithTimeout (@('-C', $SiteRoot) + $m.Extra + @('ls-remote', 'origin', 'refs/heads/main')) 8
+    if (-not $probe.TimedOut -and $probe.Out -match 'refs/heads/main') {
+        Show ("  " + $m.Name + " 可用") 'Green'
+        $chosen = $m
+        break
+    }
+    Show ("  " + $m.Name + " 不通" + $(if ($probe.TimedOut) { "（超时）" } else { "" })) 'Yellow'
 }
+
+if (-not $chosen) {
+    Show "没有任何线路可用，改动已提交在本地，稍后重跑即可。" 'Red'
+    exit 1
+}
+
+Show ("推送中（经由：" + $chosen.Name + "）...") 'Green'
+$pushR = Invoke-GitWithTimeout (@('-C', $SiteRoot) + $chosen.Extra + @('push')) 60
+$fetchR = Invoke-GitWithTimeout (@('-C', $SiteRoot) + $chosen.Extra + @('fetch', '-q', 'origin')) 30
+
+# 不看 push 的返回码，直接问远端——这是唯一可信的判据
 $remote = (git -C $SiteRoot rev-parse origin/main).Trim()
 
+# ---------- 4. 报告结果 ----------
+
 if ($local -eq $remote) {
-    Show ("`n完成。远端已同步到 " + $local.Substring(0, 7)) 'Green'
+    Show ("`n完成。远端已同步到 " + $local.Substring(0, 7) + "（经由：" + $chosen.Name + "）") 'Green'
     Show "Pages 大约 30-60 秒后重新构建，地址 https://javaochen.github.io/"
     exit 0
 } else {
