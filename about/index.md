@@ -11,8 +11,6 @@ permalink: /about/
 
 在集中心力尽快做出有效发表，见[研究状态](https://javaochen.github.io/about/research_status/)，[研究经历](https://javaochen.github.io/about/research_log/)
 
-研究报告：[reports](https://javaochen.github.io/reports/)
-
 ~年底：泛函分析备考；概率论备考。
 
 
