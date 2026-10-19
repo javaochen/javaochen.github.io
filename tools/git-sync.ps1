@@ -33,30 +33,41 @@ function Show([string]$Text, [string]$Color = 'Gray') {
 # ---------- 0. 有东西可提交吗 ----------
 
 $pending = git -C $SiteRoot -c core.quotepath=false status --porcelain
-if (-not $pending) {
-    Show "工作区没有改动，无需提交。" 'Yellow'
-    exit 0
+$didCommit = $false
+
+if ($pending) {
+    Show "=== 待提交的改动 ===" 'Cyan'
+    $pending | ForEach-Object { Write-Host ("  " + $_) }
+
+    if ($DryRun) {
+        Show "`n（-DryRun：只显示，不执行）" 'Cyan'
+        exit 0
+    }
+
+    # ---------- 1. 暂存 ----------
+    git -C $SiteRoot add -A
+    Show "`n[1/4] 已暂存" 'Green'
+
+    # ---------- 2. 提交 ----------
+    git -C $SiteRoot commit -m $Message | Out-Null
+    if ($LASTEXITCODE -ne 0) { Show "提交失败" 'Red'; exit 1 }
+    $didCommit = $true
+    $local = (git -C $SiteRoot rev-parse HEAD).Trim()
+    Show ("[2/4] 已提交 " + $local.Substring(0, 7)) 'Green'
+} else {
+    # 工作区干净，但可能有「已提交未推送」的提交（例如你手动 git commit 之后）。
+    # 早先这里直接退出，导致手动提交后 sync 不会推送——手动提交就永远上不去。
+    $local = (git -C $SiteRoot rev-parse HEAD).Trim()
+    $cachedRemote = (git -C $SiteRoot rev-parse origin/main).Trim()
+
+    if ($local -eq $cachedRemote) {
+        Show "工作区没有改动，本地与远端一致，无需推送。" 'Green'
+        exit 0
+    }
+
+    Show ("工作区没有改动，但本地有未推送的提交（本地 " + $local.Substring(0, 7) + "）。") 'Cyan'
+    if ($DryRun) { Show "（-DryRun：只显示，不执行）" 'Cyan'; exit 0 }
 }
-
-Show "=== 待提交的改动 ===" 'Cyan'
-$pending | ForEach-Object { Write-Host ("  " + $_) }
-
-if ($DryRun) {
-    Show "`n（-DryRun：只显示，不执行）" 'Cyan'
-    exit 0
-}
-
-# ---------- 1. 暂存 ----------
-
-git -C $SiteRoot add -A
-Show "`n[1/4] 已暂存" 'Green'
-
-# ---------- 2. 提交 ----------
-
-git -C $SiteRoot commit -m $Message | Out-Null
-if ($LASTEXITCODE -ne 0) { Show "提交失败" 'Red'; exit 1 }
-$local = (git -C $SiteRoot rev-parse HEAD).Trim()
-Show ("[2/4] 已提交 " + $local.Substring(0, 7)) 'Green'
 
 # ---------- 3. 推送（先探测线路，再推送） ----------
 #
