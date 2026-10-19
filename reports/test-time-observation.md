@@ -5,12 +5,13 @@ permalink: /reports/test-time-observation/
 
 # How to continue observation and intervention during relational inference deployment
 
-
 对于无监督推断新样本节点的不时变的成对关系类型和动力学的任务，已有模型已经对效果做了各种优化，但往往测试时的观测时长和训练时一样短，考虑实际部署时，测试时往往能观测很久且能适当干预，但都会分布偏移。实际上，现有模型测试时单轮观测的效果也假设了同分布
 
 在收敛的神经关系推断基座上，考虑测试时多轮观测的实验和方法
 
-## 直接融合多轮观测
+## 模型
+
+### 直接融合多轮观测
 
 
 
@@ -18,9 +19,9 @@ permalink: /reports/test-time-observation/
 
 
 
-## 优化多轮观测
+### 优化多轮观测
 
-## 干预方法
+### 干预方法
 
 何时
 
@@ -30,7 +31,7 @@ permalink: /reports/test-time-observation/
 
 干预位置、速度还是加速度
 
-## 用于适应时变关系
+### 用于适应时变关系
 
 dNRI
 
@@ -38,7 +39,7 @@ ORI
 
 CRI
 
-## 用于调控
+# ## 用于调控
 
 NRI学习的动力学可以用来做调控，而干预的方法可以推广为调控的方法
 

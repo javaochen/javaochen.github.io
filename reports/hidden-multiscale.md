@@ -5,7 +5,6 @@ permalink: /reports/hidden-multiscale/
 
 # Joint inference for hidden and multiscale dynamical stucture
 
-
 隐藏节点容易干扰关系建模，需要联合建模
 
 群体结构可以是实际存在的高阶作用，也可以是简化
@@ -16,11 +15,9 @@ permalink: /reports/hidden-multiscale/
 
 粗尺度一般自下而上，但也可自上而下，两种方向如何汇合
 
-## 实验规划
+## 实验及规划
 
-
-
-复现GroupNet等的任务
+配置了GroupNet，MART的任务
 
 构造
 
