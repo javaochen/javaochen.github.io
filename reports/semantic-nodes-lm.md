@@ -1,9 +1,9 @@
 ---
-title: 通过语义节点的多尺度思考（面向已训练语言模型）
+title: Multiscale thought through semantic nodes for trained language models
 permalink: /reports/semantic-nodes-lm/
 ---
 
-# 通过语义节点的多尺度思考（面向已训练语言模型）
+# Multiscale thought through semantic nodes for trained language models
 
 
 

@@ -1,9 +1,9 @@
 ---
-title: 联合推断隐藏节点与多尺度动力学结构
+title: Joint inference for hidden and multiscale dynamical stucture
 permalink: /reports/hidden-multiscale/
 ---
 
-# 联合推断隐藏节点与多尺度动力学结构
+# Joint inference for hidden and multiscale dynamical stucture
 
 
 隐藏节点容易干扰关系建模，需要联合建模

@@ -1,9 +1,9 @@
 ---
-title: 关系推断部署时：如何持续观测与干预
+title: How to continue observation and intervention during relational inference deployment
 permalink: /reports/test-time-observation/
 ---
 
-# 关系推断部署时：如何持续观测与干预
+# How to continue observation and intervention during relational inference deployment
 
 
 对于无监督推断新样本节点的不时变的成对关系类型和动力学的任务，已有模型已经对效果做了各种优化，但往往测试时的观测时长和训练时一样短，考虑实际部署时，测试时往往能观测很久且能适当干预，但都会分布偏移。实际上，现有模型测试时单轮观测的效果也假设了同分布
