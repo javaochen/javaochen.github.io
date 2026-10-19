@@ -60,7 +60,15 @@ function Get-NormalizedPath {
     foreach ($seg in ($resolved -split '/')) {
         if ($seg -eq '' -or $seg -eq '.') { continue }
         if ($seg -eq '..') {
-            if ($parts.Count -gt 0) { $parts = @($parts[0..($parts.Count - 2)]) }
+            # 注意：不能写成 $parts[0..($parts.Count-2)]。
+            # 当 Count=1 时，$parts.Count-2 = -1，而 PowerShell 的 0..-1
+            # 不是空数组，是 (0,-1)，会取到第 0 个和最后一个元素，
+            # 于是 ["about"] 变成 ["about","about"]，路径多出一层。
+            if ($parts.Count -ge 2) {
+                $parts = @($parts[0..($parts.Count - 2)])
+            } elseif ($parts.Count -eq 1) {
+                $parts = @()
+            }
         } else { $parts += $seg }
     }
     $norm = '/' + ($parts -join '/')
