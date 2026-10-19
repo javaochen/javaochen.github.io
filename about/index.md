@@ -9,17 +9,17 @@ permalink: /about/
 
 核心：~2027-9：缓解保研压力
 
-在集中心力尽快做出有效发表，见[研究状态](research_status/)，[研究经历](research_log/)
+在集中心力尽快做出有效发表，见[研究状态](https://javaochen.github.io/about/research_status/)，[研究经历](https://javaochen.github.io/about/research_log/)
 
-研究报告：[reports](../reports/)
+研究报告：[reports](https://javaochen.github.io/reports/)
 
 ~年底：泛函分析备考；概率论备考。
 
 
 ## 在做的项目
-[联合推断时序中的群体作用和隐藏节点](group_hidden_node/),需要判断做到什么程度
+[联合推断时序中的群体作用和隐藏节点](https://javaochen.github.io/about/group_hidden_node/),需要判断做到什么程度
 
-[面向分布式资源大规模接入的城市电网承载力评估及优化技术研究](powergid_research/)，受甲方限制，交付一期结果后需要商量是否退出
+[面向分布式资源大规模接入的城市电网承载力评估及优化技术研究](https://javaochen.github.io/about/powergid_research/)，受甲方限制，交付一期结果后需要商量是否退出
 
 ## 心理
 @ 主要社会关系

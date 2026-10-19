@@ -24,6 +24,9 @@ if (-not $SiteRoot) {
 }
 $SiteRoot = (Resolve-Path $SiteRoot).Path
 
+# 本站对外地址。用来把「全网址链接」还原成站内路径再校验。
+$SiteUrl = 'https://javaochen.github.io'
+
 Write-Host "站点根目录: $SiteRoot`n"
 
 # ---------- 工具函数 ----------
@@ -117,10 +120,20 @@ foreach ($f in $mdFiles) {
 
     foreach ($m in [regex]::Matches($content, '\[([^\]]*)\]\(([^)]+)\)')) {
         $target = $m.Groups[2].Value.Trim()
-        if ($target -match '^(https?:|mailto:|#)') { continue }
+
+        # 本站全网址（如 https://javaochen.github.io/about/）也当内部链接检查，
+        # 否则改成全网址后这些链接会被当作外部链接跳过，失去校验能力。
+        $baseDir = $dir
+        if ($target.StartsWith($SiteUrl)) {
+            $target = $target.Substring($SiteUrl.Length)
+            if (-not $target.StartsWith('/')) { $target = '/' + $target }
+            $baseDir = ''          # 全网址是从站点根解析的，不依赖当前文件位置
+        } elseif ($target -match '^(https?:|mailto:|#)') {
+            continue               # 真正的外部链接，跳过
+        }
         $checkedLinks++
 
-        $norm = Get-NormalizedPath -BaseDir $dir -Target $target
+        $norm = Get-NormalizedPath -BaseDir $baseDir -Target $target
         $ok = $false
         $why = ''
 
