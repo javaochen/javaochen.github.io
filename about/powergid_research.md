@@ -11,6 +11,4 @@ permalink: /about/powergid_research/
 
 
 
-## 
 
-## 

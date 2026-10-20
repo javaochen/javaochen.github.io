@@ -31,7 +31,9 @@ Dynamic-Group-Aware Networks for Multi-Agent Trajectory Prediction with Relation
 
 MART MultiscAle Relational Transformer Networks for Multi-agent Trajectory Prediction,ECCV2024
 
-Neural Relational Inference with Fast Modular Meta-learning,ICML2018(NRI)
+Neural Relational Inference with Fast Modular Meta-learning(NRI-ModularMeta)
+
+Neural Relational Inference for Interacting Systems,ICML2018(NRI)
 
 Reconstructing propagation networks with natural diversity and identifying hidden sources
 
@@ -46,5 +48,3 @@ Network Renormalization,Nature Reviews Physics,2025
 # 附录
 
 大规模系统需要先粗粒化，不一定追求微观精度
-
-
