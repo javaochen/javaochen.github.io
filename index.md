@@ -16,7 +16,7 @@ title: Javao Chen
 
 - [我的状态](https://javaochen.github.io/about/)——主线、在做的项目、心理与行为
 - [研究状态](https://javaochen.github.io/about/research_status/)
-- [研究经历](https://javaochen.github.io/about/research_log/)——导师给的参考文献线索
+- [研究经历](https://javaochen.github.io/about/research_log/)——导师给的参考文献及线索
 
 ## 在做的项目
 

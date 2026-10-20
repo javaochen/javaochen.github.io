@@ -9,7 +9,7 @@ permalink: /reports/hidden-multiscale/
 
 群体结构可以是实际存在的高阶作用，也可以是简化
 
-大规模系统需要先粗粒化，不一定追求微观精度
+指向中心的群体作用能拆成成对作用之和
 
 时间尺度分离，快变关系可建模为代数方程
 
@@ -19,13 +19,15 @@ permalink: /reports/hidden-multiscale/
 
 配置了GroupNet，MART的任务
 
-构造
+
 
 构造合适的复杂关系的例子
 
 ## 文献
 
 GroupNet Multiscale Hypergraph Neural Networks for Trajectory Prediction with Relational Reasoning,CVPR2022
+
+Dynamic-Group-Aware Networks for Multi-Agent Trajectory Prediction with Relational Reasoning,2023(DynGroupNet)
 
 MART MultiscAle Relational Transformer Networks for Multi-agent Trajectory Prediction,ECCV2024
 
@@ -42,3 +44,7 @@ Finding emergence in data by maximizing effective information(NIS+)
 Network Renormalization,Nature Reviews Physics,2025
 
 # 附录
+
+大规模系统需要先粗粒化，不一定追求微观精度
+
+
