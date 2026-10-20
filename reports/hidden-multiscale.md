@@ -35,6 +35,8 @@ Neural Relational Inference with Fast Modular Meta-learning(NRI-ModularMeta)
 
 Neural Relational Inference for Interacting Systems,ICML2018(NRI)
 
+Hierarchical Relational Inference,AAAI2021(HRI)
+
 Reconstructing propagation networks with natural diversity and identifying hidden sources
 
 Multiscale Invertible Generative Networks for High-Dimensional Bayesian Inference,ICML2021
@@ -44,6 +46,8 @@ Bottom Up and Top Down Reasoning with Hierarchical Rectified Gaussians,CVPR2016
 Finding emergence in data by maximizing effective information(NIS+)
 
 Network Renormalization,Nature Reviews Physics,2025
+
+Learning Coarse Grained Dynamics on Graph,Physica D2025
 
 # 附录
 

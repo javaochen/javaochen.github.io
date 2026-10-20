@@ -30,7 +30,7 @@
 
 ## 怎么新建一个页面
 
-**第一步**：在 `about/` 下新建 `xxx.md`，开头写三行：
+**第一步**：新建 `xxx.md`（放 `about/` 或 `reports/`），开头写：
 
 ```markdown
 ---
@@ -39,11 +39,13 @@ permalink: /about/xxx/
 ---
 ```
 
-**第二步**：在 `about/index.md` 的列表里加一行：
+**第二步**：在**首页 `index.md`** 里加一行链接。本站约定：**新文档都从主页链接**，这样访客和 AI 都能从一处找到全部内容。
 
 ```markdown
-- [页面标题](xxx/)
+- [页面标题](https://javaochen.github.io/about/xxx/)
 ```
+
+链接用**全网址**（`https://javaochen.github.io/...`），不用相对路径——两者都行，但全网址在复制、粘贴给 AI 时不会因为「从哪个页面解析」而出错。
 
 ## 一条重要规则：permalink 和链接必须逐字相同
 
