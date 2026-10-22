@@ -32,4 +32,8 @@ title: Javao Chen
 - [Joint inference for hidden and multiscale dynamical stucture](https://javaochen.github.io/reports/hidden-multiscale/)
 - [Multiscale thought through semantic nodes for trained language models](https://javaochen.github.io/reports/semantic-nodes-lm/)
 
+## 提示词
+
+- [我给 AI 的提示词](https://javaochen.github.io/prompts/)
+
 邮箱：24300180074@m.fudan.edu.cn

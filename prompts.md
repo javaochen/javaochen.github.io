@@ -1,4 +1,9 @@
+---
+title: 提示词
+permalink: /prompts/
+---
 
+[← 返回主页](https://javaochen.github.io/)
 
 ## 对话
 注重引证，可以不厌其烦地引用图片、公式、代码块等；
