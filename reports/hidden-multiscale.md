@@ -5,15 +5,21 @@ permalink: /reports/hidden-multiscale/
 
 # Joint inference for hidden and multiscale dynamical stucture
 
-隐藏节点容易干扰关系建模，需要联合建模
+
+
+2026-1，粗尺度一般自下而上，但也可自上而下，两种方向如何汇合
+
+
+
+2026-3，隐藏节点容易干扰关系建模，需要联合建模
 
 群体结构可以是实际存在的高阶作用，也可以是简化
 
+2026-9，时间尺度分离，快变关系可建模为代数方程
+
+### 2026-10
+
 指向中心的群体作用能拆成成对作用之和
-
-时间尺度分离，快变关系可建模为代数方程
-
-粗尺度一般自下而上，但也可自上而下，两种方向如何汇合
 
 ## 实验及规划
 
@@ -50,5 +56,7 @@ Network Renormalization,Nature Reviews Physics,2025
 Learning Coarse Grained Dynamics on Graph,Physica D2025
 
 # 附录
+
+
 
 大规模系统需要先粗粒化，不一定追求微观精度
