@@ -21,6 +21,8 @@ permalink: /reports/hidden-multiscale/
 
 指向中心的群体作用能拆成成对作用之和
 
+群体和隐藏节点都即使推断有效也缺乏语义，考虑自上而下注入情景，比如结合语言模型推理该怎么建模
+
 ## 实验及规划
 
 配置了GroupNet，MART的任务

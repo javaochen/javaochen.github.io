@@ -19,6 +19,37 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# ---------- 找到 git（有的机器上 git 不在 PATH 里）----------
+#
+# 踩坑：这台机器装了 Git，但 PATH 里没有它，sync.cmd 直接报
+# 「无法将 git 项识别为 cmdlet」。所以先解析出 git.exe 的位置，
+# 再把它的目录塞进本次进程的 PATH。Start-Job 起的子进程会继承
+# 环境变量，下面探测线路的作业因此也能用上。
+function Resolve-GitExe {
+    $cmd = Get-Command git -CommandType Application -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+
+    $roots = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, $env:LOCALAPPDATA)
+    foreach ($root in $roots) {
+        if (-not $root) { continue }
+        foreach ($rel in @('Git\cmd\git.exe', 'Programs\Git\cmd\git.exe', 'Git\bin\git.exe')) {
+            $p = Join-Path $root $rel
+            if (Test-Path $p) { return $p }
+        }
+    }
+    return $null
+}
+
+$gitExe = Resolve-GitExe
+if (-not $gitExe) {
+    Write-Host "找不到 git.exe。请安装 Git，或把它加进 PATH。" -ForegroundColor Red
+    exit 1
+}
+$gitDir = Split-Path -Parent $gitExe
+if (($env:PATH -split ';') -notcontains $gitDir) {
+    $env:PATH = $gitDir + ';' + $env:PATH
+}
+
 if (-not $SiteRoot) {
     $scriptDir = $PSScriptRoot
     if (-not $scriptDir) { $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
