@@ -22,7 +22,7 @@ title: Javao Chen
 
 ~2027-01-04：泛函分析备考；概率论备考。
 
-[研究状态](https://javaochen.github.io/about/research_status/)
+[研究状态](https://javaochen.github.io/about/review/)
 
 ### 我的心理
 

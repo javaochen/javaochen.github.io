@@ -1,7 +1,7 @@
 ---
-title: 研究状态
+title: 复盘
 
-permalink: /about/research_status/
+permalink: /about/review/
 
 ---
 
