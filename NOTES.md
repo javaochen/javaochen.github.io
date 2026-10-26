@@ -7,6 +7,7 @@
 ```
 /
 ├── index.md                       首页（访问 /）
+├── semantic-node_note.md          文档呈现语义节点（暂放根目录，地址 /semantic-node_note/）
 ├── about/                         关于我（访问 /about/）
 │   ├── index.md                   入口页，列出下面几个子页的链接
 │   ├── review.md         研究状态

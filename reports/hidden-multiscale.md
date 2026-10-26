@@ -57,6 +57,8 @@ Network Renormalization,Nature Reviews Physics,2025
 
 Learning Coarse Grained Dynamics on Graph,Physica D2025
 
+Structural Inference under Hidden Agents，arXiv2026
+
 # 附录
 
 

@@ -7,7 +7,6 @@ permalink: /reports/semantic-nodes-lm/
 
 
 
-
 本文大部分内容未定，大量想法未写过来
 
 ## 问题
@@ -73,5 +72,7 @@ Neural Relational Inference for Interacting Systems(NRI)
 
 
 # 附录
+
+## 问题收敛
 
 
