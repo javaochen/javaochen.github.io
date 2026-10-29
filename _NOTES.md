@@ -1,6 +1,6 @@
 # 文件夹说明
 
-这个文件只有你自己（和协作者）看得到，它不会被发布到网站上。
+这个文件只有你自己（和协作者）看得到。文件名以 `_` 开头，Jekyll 默认不输出，所以不会出现在网站上（2026-10-29 核实：改名前 `NOTES.md` 曾以 `/NOTES.html` 发布，已修正）。改名后不要再去掉下划线。
 
 ## 目录结构
 
@@ -101,12 +101,12 @@ permalink: /about/xxx/
 ## 改完怎么发布
 
 ```powershell
-cd C:\Users\32475\Downloads\javaochen.github.io
+cd C:\Users\lenovo\Downloads\javaochen.github.io
 git add -A
 git commit -m "更新说明"
-git push
+git -c http.proxy=http://127.0.0.1:17890 push
 ```
 
-注意：这台机器上直接 `git push` 会因为凭据问题失败。要么用带 token 的地址推送，要么直接让 AI 代推。
+注意：这台机器的 `.git/config` 里 `http.proxy` 指向已失效的 `7890`，所以裸 `git push` 会失败；上面这条加上 17890 代理可以直接推。代理没开时改用 `git -c http.proxy= push` 走直连（2026-10-29 实测直连时好时坏）。
 
 推完等 30～60 秒，Pages 会自动重新构建。
