@@ -43,7 +43,7 @@ $$z_t=f(x_t),\quad\mathcal{z}:=f(\mathcal x).\quad(1)$$
 微观差别在宏观尺度上无关紧要时，粗粒化为同一宏观状态
 宏观需要满足自封闭动力学：预测宏观的下一步只需要已有的宏观状态，加上微观状态没有额外增益
 $$I(z_{t+1},z_t,x_t)\approx I(z_{t+1},z_t).\quad(2)$$
-$z_{t+1}=T(z_t)+\eta_t.$
+$$z_{t+1}=T(z_t)+\eta_t.$$
 
 ### 实现.3 Learning Representational Effective Theories
 
@@ -69,7 +69,7 @@ $$\mathcal{L}_{\mathrm{pred}}=\left\|T_{\phi}(f_{\theta}(x_{t}))-f_{\theta}(x_{t
 ### 5 Early Prediction of LLM Behavior
 
 在训练辅助模型时加入对奉承或伪装的监督学习，只用前一小段语言的宏观状态预测后续倾向
-$\mathcal{L}_{\mathrm{RET-sup}}=\underbrace{\left\|T_{\phi}\left(f_{\theta}\left(x_{t}\right)\right)-f_{\theta}\left(x_{t+1}\right)\right\|_{1}}_{\mathcal{L}_{\mathrm{pred}}\left(\mathrm{Eq}_{-4}\right)}$+$\lambda_{s}\frac{1}{|\mathcal{M}|}\sum_{t\in\mathcal{M}}\left(g_{\psi}(z_{t})-y_{t}\right)^{2},(5)$
+$$\mathcal{L}_{\mathrm{RET-sup}}=\underbrace{\left\|T_{\phi}\left(f_{\theta}\left(x_{t}\right)\right)-f_{\theta}\left(x_{t+1}\right)\right\|_{1}}_{\mathcal{L}_{\mathrm{pred}}\left(\mathrm{Eq}_{-4}\right)}$$+$$\lambda_{s}\frac{1}{|\mathcal{M}|}\sum_{t\in\mathcal{M}}\left(g_{\psi}(z_{t})-y_{t}\right)^{2},(5)$$
 图4 预测准确率，对比基线
 
 ### 6 Unsupervised Steering with RET
