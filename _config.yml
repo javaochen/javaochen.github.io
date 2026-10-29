@@ -4,9 +4,9 @@
 # 一旦加了本文件就要自己声明，否则会掉主题。
 theme: jekyll-theme-primer
 
-# 让 kramdown 把 $$...$$ 与 $...$ 识别为数学，输出 \[...\] 与 \(...\)
-# 交给 MathJax 渲染。若不开这一项，公式里的下划线会被当成斜体，公式会被破坏。
-# input 用 kramdown 原生解析器：GFM 模式只认 $$...$$，行内 $...$ 不生效。
+# 让 kramdown 把 $$...$$ 识别为数学，输出 \(...\) 交给 MathJax 渲染。
+# 若不开这一项，公式里的下划线会被当成斜体，公式会被破坏。
+# 注意：kramdown 只认 $$...$$，单个 $...$ 不会被识别（2026-10-30 实测，
+# 换成 input: kramdown 也无效，且会改变标题锚点，故保持 GFM）。
 kramdown:
-  input: kramdown
   math_engine: mathjax
