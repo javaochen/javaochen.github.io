@@ -6,5 +6,7 @@ theme: jekyll-theme-primer
 
 # 让 kramdown 把 $$...$$ 与 $...$ 识别为数学，输出 \[...\] 与 \(...\)
 # 交给 MathJax 渲染。若不开这一项，公式里的下划线会被当成斜体，公式会被破坏。
+# input 用 kramdown 原生解析器：GFM 模式只认 $$...$$，行内 $...$ 不生效。
 kramdown:
+  input: kramdown
   math_engine: mathjax
