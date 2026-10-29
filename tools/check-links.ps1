@@ -86,6 +86,7 @@ $mdFiles = @(Get-ChildItem -Recurse -Force $SiteRoot -Filter *.md |
     Where-Object {
         $_.FullName -notmatch '\\\.git\\' -and
         $_.FullName -notmatch '\\_private\\' -and
+        $_.FullName -notmatch '\\_drafts\\' -and
         $_.FullName -notmatch '\\_site\\'
     })
 
