@@ -24,8 +24,7 @@
 │   ├── check-links.ps1            链接校验
 │   ├── rename-page.ps1            改名并同步所有引用
 │   └── git-sync.ps1               一条命令提交并推送
-├── archive/                       归档，一年内用不到的内容
-│   └── 控制理论基础/2.1.md
+├── archive/                       归档，一年内用不到的内容（目前为空）
 └── assets/                        图片等资源
 ```
 
