@@ -22,8 +22,6 @@ title: Javao Chen
 
 ~2027-01-04：泛函分析备考；概率论备考。
 
-[研究状态](https://javaochen.github.io/about/review/)
-
 ### 我的心理
 
 情绪会随时爆发，影响任务的可行性
@@ -42,7 +40,7 @@ title: Javao Chen
 
 ## 研究状态
 
-多尺度结构推断也许能尽快做出来，但不好出投稿级别效果
+[研究经历](https://javaochen.github.io/about/research_log/)
 
 审视清对认知的积累和能发挥之处
 
