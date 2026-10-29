@@ -34,8 +34,6 @@ title: Javao Chen
 
 我身子弱，言行和涉及都偏好柔和，但又渴望能力，不愿在琐事上消耗太久。
 
-
-
 ## 在做的项目
 
 [联合推断时序中的群体作用和隐藏节点](https://javaochen.github.io/about/group_hidden_node/)，需要判断做到什么程度
@@ -50,9 +48,7 @@ title: Javao Chen
 
 ## 对科学问题的积累
 
-草稿，项目完成前随时变动。
-
-[在导师下的研究经历](https://javaochen.github.io/about/research_log/)——参考文献及线索
+累积背景、想法或发现，可能很过时，不是实验报告，实验需要在图和代码旁整理
 
 - [DER电网的类Kuramoto模型](https://javaochen.github.io/reports/der-kuramoto/)
 - [How to continue observation and intervention during relational inference deployment](https://javaochen.github.io/reports/test-time-observation/)
