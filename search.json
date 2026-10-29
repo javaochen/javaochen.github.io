@@ -1,0 +1,13 @@
+---
+layout: null
+---
+[
+{%- assign first = true -%}
+{%- for p in site.pages -%}
+{%- if p.title and p.url != '/search.json' and p.url != '/search/' and p.url != '/404.html' -%}
+{%- unless first -%},{%- endunless -%}
+{%- assign first = false -%}
+{"title":{{ p.title | jsonify }},"url":{{ p.url | relative_url | jsonify }},"text":{{ p.content | strip_html | strip_newlines | jsonify }}}
+{%- endif -%}
+{%- endfor -%}
+]
