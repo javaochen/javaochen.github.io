@@ -24,9 +24,24 @@
 │   ├── check-links.ps1            链接校验
 │   ├── rename-page.ps1            改名并同步所有引用
 │   └── git-sync.ps1               一条命令提交并推送
+├── search.json                    搜索索引（Liquid 生成，列出所有有 title 的页面）
+├── search/index.md                搜索页（访问 /search/）
+├── _includes/head-custom.html     给每一页注入搜索脚本、快捷键
+├── _private/                      私有部分（本地 git，不推送、不发布，见下）
 ├── archive/                       归档，一年内用不到的内容（目前为空）
-└── assets/                        图片等资源
+└── assets/
+    ├── css/                       主题样式（GitHub Pages 主题自带）
+    └── js/search.js               全站搜索（无依赖）
 ```
+
+## 私有部分 `_private/`
+
+`_private/` 是本仓库内的私有笔记，有自己的 git 历史（进到该目录后照常 `git add` / `git commit`），但外层 `.gitignore` 忽略了它：
+
+- 不会出现在 GitHub 仓库里（不会被 push）
+- 不会被 Jekyll 发布（`_` 开头的目录默认跳过）
+
+状态细节、未成形的想法、临时计算都可以放这里。注意它没有任何远端备份，换电脑或重装前手动复制。
 
 ## 怎么新建一个页面
 
@@ -76,6 +91,12 @@ permalink: /about/xxx/
 ```markdown
 ![说明文字](../assets/图片名.png)
 ```
+
+## 搜索
+
+任何页面按 `Ctrl+K`（或在不是输入框的地方按 `/`）打开搜索框，页面右下角也有按钮；也可以直接访问 `/search/`。
+
+索引来自根目录的 `search.json`，它用 Liquid 遍历 `site.pages`：**新建页面只要写了 `title`，就自动进索引**，不用手工维护条目。跳转后会滚动到页面里第一个匹配处并短暂高亮，逻辑在 `assets/js/search.js`。
 
 ## 改完怎么发布
 

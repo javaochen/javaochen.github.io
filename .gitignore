@@ -1,0 +1,7 @@
+# 私有部分：本地 git，不推送、不发布
+_private/
+
+# 本地构建产物（若以后在本地跑 jekyll）
+_site/
+.jekyll-cache/
+.sass-cache/

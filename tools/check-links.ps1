@@ -83,7 +83,11 @@ function Get-NormalizedPath {
 
 $pages = @{}
 $mdFiles = @(Get-ChildItem -Recurse -Force $SiteRoot -Filter *.md |
-    Where-Object { $_.FullName -notmatch '\\\.git\\' })
+    Where-Object {
+        $_.FullName -notmatch '\\\.git\\' -and
+        $_.FullName -notmatch '\\_private\\' -and
+        $_.FullName -notmatch '\\_site\\'
+    })
 
 foreach ($f in $mdFiles) {
     $fm = Get-FrontMatter $f.FullName
