@@ -1,0 +1,10 @@
+# 站点配置（GitHub Pages 用 Jekyll 3.10 构建）
+#
+# theme 必须显式写出：没有这个文件时主题由 GitHub Pages 默认提供，
+# 一旦加了本文件就要自己声明，否则会掉主题。
+theme: jekyll-theme-primer
+
+# 让 kramdown 把 $$...$$ 与 $...$ 识别为数学，输出 \[...\] 与 \(...\)
+# 交给 MathJax 渲染。若不开这一项，公式里的下划线会被当成斜体，公式会被破坏。
+kramdown:
+  math_engine: mathjax

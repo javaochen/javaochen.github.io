@@ -1,3 +1,18 @@
+<!-- 公式：_config.yml 里 kramdown.math_engine=mathjax 会输出 \(...\) 与 \[...\] -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']],
+      processEscapes: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 <!-- 全站搜索：Ctrl+K / ⌘K 打开，Esc 关闭；/search/ 页面内联显示。
      索引由仓库根目录 search.json 用 Liquid 生成。 -->
 <script src="{{ '/assets/js/search.js' | relative_url }}" defer></script>
