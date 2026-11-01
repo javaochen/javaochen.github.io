@@ -1,6 +1,6 @@
 'use strict';
 const $ = id => document.getElementById(id);
-let prompts = [...window.PROMPTS], selected = prompts[0], controller, answer = '', target = null, complete = false;
+let prompts = window.PROMPTS.map(p => ({...p})), selected = prompts[0], controller, answer = '', target = null, complete = false;
 let handle = null, fileName = '未命名.md', dirty = false, history = [], renderTimer;
 const editor = $('editor');
 function status(s) { $('status').textContent = s; }
@@ -23,7 +23,7 @@ function list() {
     $('prompts').append(b);
   }
 }
-$('instruction').value = selected.body; list();
+$('instruction').value = selected.body; $('activeName').textContent = selected.name; list();
 $('search').oninput = list;
 $('addPrompt').onclick = () => {
   const name = $('customName').value.trim(), body = $('customBody').value.trim();
