@@ -11,15 +11,12 @@
 ├── about/                         关于我（访问 /about/）
 │   ├── index.md                   入口页，列出下面几个子页的链接
 │   ├── review.md         研究状态
-│   ├── research_log.md            研究经历（导师给的参考文献线索）
 │   ├── group_hidden_node.md       联合推断时序中的群体作用和隐藏节点
 │   └── powergid_research.md       城市电网承载力项目
 ├── reports/                       研究报告（访问 /reports/）
 │   ├── index.md                   报告目录页
 │   ├── der-kuramoto.md            DER 电网的类 Kuramoto 模型
-│   ├── test-time-observation.md   关系推断部署时的持续观测与干预
-│   ├── hidden-multiscale.md       联合推断隐藏节点与多尺度动力学结构
-│   └── semantic-nodes-lm.md       通过语义节点的多尺度思考
+│   └── test-time-observation.md   关系推断部署时的持续观测与干预
 ├── tools/                         本地脚本（会被一起发布，但不影响阅读）
 │   ├── check-links.ps1            链接校验
 │   ├── rename-page.ps1            改名并同步所有引用
@@ -42,6 +39,8 @@
 - 不会被 Jekyll 发布（`_` 开头的目录默认跳过）
 
 状态细节、未成形的想法、临时计算都可以放这里。注意它没有任何远端备份，换电脑或重装前手动复制。
+
+2026-11-21：`reports/semantic-nodes-lm.md`、`reports/hidden-multiscale.md`、`about/research_log.md` 已移到 `_private/research/`，站点不再发布；主页只保留文字描述。
 
 ## 怎么新建一个页面
 

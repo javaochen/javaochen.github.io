@@ -34,13 +34,13 @@ title: Javao Chen
 
 ## 在做的项目
 
-[联合推断时序中的群体作用和隐藏节点](https://javaochen.github.io/reports/hidden-multiscale/)，需要判断做到什么程度
+联合推断时序中的群体作用和隐藏节点（笔记在本机私有区，不公开），需要判断做到什么程度
 
 负责人为导师 的[面向分布式资源大规模接入的城市电网承载力评估及优化技术研究](https://javaochen.github.io/reports/der-kuramoto/)，受甲方限制且我不方便见到甲方，我处境不比组员，交付一期结果后需要商量是否退出
 
 ## 研究状态
 
-[研究经历](https://javaochen.github.io/about/research_log/)
+研究经历（笔记在本机私有区，不公开）
 
 审视清对认知的积累和能发挥之处
 
@@ -49,7 +49,7 @@ title: Javao Chen
 累积背景、想法或发现，可能很过时，不是实验报告，实验需要在图和代码旁整理
 
 - [DER电网的类Kuramoto模型](https://javaochen.github.io/reports/der-kuramoto/)
-- [Joint inference for hidden and multiscale dynamical stucture](https://javaochen.github.io/reports/hidden-multiscale/)
-- [Multiscale thought through semantic nodes for trained language models](https://javaochen.github.io/reports/semantic-nodes-lm/)
+- Joint inference for hidden and multiscale dynamical stucture（笔记在本机私有区，不公开）
+- Multiscale thought through semantic nodes for trained language models（笔记在本机私有区，不公开）
 
 ## 
